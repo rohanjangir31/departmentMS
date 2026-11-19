@@ -46,9 +46,14 @@ export default function Register() {
     try {
       await register(formData);
       router.push("/dashboard");
-      toast.success("Account created succesfully 🎉🎉🎉 ");
-    } catch (err) {
-      setError("Failed to create an account. Please try again.");
+      toast.success("Account created successfully 🎉");
+    } catch (err: any) {
+      const serverMsg =
+        err?.response?.data?.message ||
+        (Array.isArray(err?.response?.data?.data)
+          ? err.response.data.data.map((d: any) => d.message).join(", ")
+          : null);
+      setError(serverMsg || "Failed to create an account. Please check your inputs.");
       console.error(err);
     } finally {
       setLoading(false);
