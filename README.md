@@ -1,7 +1,7 @@
 # AcademiQ — AI-Powered Academic Department Management & Analytics System
 
 > **Major Project — B.Tech Computer Science, Final Year**  
-> Built upon [`oyerohabib/departmentMS`](https://github.com/oyerohabib/departmentMS) (MIT License) — see [ATTRIBUTION.md](./ATTRIBUTION.md)
+
 
 [![CI](https://github.com/rohanjangir31/departmentMS/actions/workflows/ci.yml/badge.svg)](https://github.com/rohanjangir31/departmentMS/actions/workflows/ci.yml)
 
