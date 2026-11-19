@@ -1,0 +1,104 @@
+version: "3.9"
+
+# AcademiQ — AI-Powered Academic Department Management System
+# One-command startup: docker compose up --build
+# Stop and remove volumes: docker compose down -v
+
+services:
+  # ─────────────────────────────────────────────────────────
+  # MongoDB Database
+  # ─────────────────────────────────────────────────────────
+  mongodb:
+    image: mongo:7
+    container_name: academiq-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    environment:
+      MONGO_INITDB_DATABASE: academiq
+    networks:
+      - academiq-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # ─────────────────────────────────────────────────────────
+  # Express + TypeScript Backend
+  # ─────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    container_name: academiq-backend
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      MONGODB_URI: mongodb://mongodb:27017/academiq
+      JWT_SECRET: ${JWT_SECRET:-academiq_change_this_secret_in_production}
+      FRONTEND_URL: http://localhost:3000
+    volumes:
+      # Persist uploaded course materials across container restarts
+      - backend_uploads:/app/uploads
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - academiq-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # ─────────────────────────────────────────────────────────
+  # Next.js 15 Frontend
+  # ─────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: production
+      args:
+        NEXT_PUBLIC_API_URL: http://backend:4000/api
+    container_name: academiq-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - academiq-network
+
+# ─────────────────────────────────────────────────────────
+# Named Volumes (data persists between `docker compose down`)
+# ─────────────────────────────────────────────────────────
+volumes:
+  mongodb_data:
+    name: academiq_mongodb_data
+  mongodb_config:
+    name: academiq_mongodb_config
+  backend_uploads:
+    name: academiq_backend_uploads
+
+# ─────────────────────────────────────────────────────────
+# Internal Network
+# ─────────────────────────────────────────────────────────
+networks:
+  academiq-network:
+    name: academiq-network
+    driver: bridge
