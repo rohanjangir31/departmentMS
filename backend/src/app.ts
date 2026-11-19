@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import courseRoutes from "./routes/course.routes";
 import materialRoutes from "./routes/material.routes";
+import aiRoutes from "./routes/ai.routes";
 
 dotenv.config();
 
@@ -55,16 +56,19 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/materials", materialRoutes);
+app.use("/api/ai", aiRoutes);
 
-// Database connection
-mongoose
-  .connect(process.env.MONGODB_URI as string)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+// Database connection and server startup (only in non-test mode)
+if (process.env.NODE_ENV !== "test") {
+  mongoose
+    .connect(process.env.MONGODB_URI as string)
+    .then(() => console.log("Connected to MongoDB"))
+    .catch((err) => console.error("MongoDB connection error:", err));
 
-const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log(`Server listening at port: ${port}`);
-});
+  const port = process.env.PORT || 4000;
+  app.listen(port, () => {
+    console.log(`Server listening at port: ${port}`);
+  });
+}
 
 export default app;

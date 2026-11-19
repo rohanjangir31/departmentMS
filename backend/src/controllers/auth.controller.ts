@@ -14,6 +14,12 @@ export const registerUser: AsyncRequestHandler = async (req, res, next) => {
   try {
     const { name, email, password, role } = req.body;
 
+    // Disallow registering as admin through public registration
+    if (role === "admin") {
+      sendResponse(res, 403, false, "Admin registration is not allowed through this endpoint", null);
+      return;
+    }
+
     // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -22,11 +28,19 @@ export const registerUser: AsyncRequestHandler = async (req, res, next) => {
     }
 
     // Hash the password and create the user
+    const assignedRole = role === "lecturer" ? "lecturer" : "student";
     const hashedPassword = await hashPassword(password);
-    const newUser = new User({ name, email, password: hashedPassword, role });
+    const newUser = new User({ name, email, password: hashedPassword, role: assignedRole });
     await newUser.save();
 
-    sendResponse(res, 201, false, "User registered successfully", null);
+    const userObject = newUser.toObject();
+    delete (userObject as any).password;
+    const token = generateToken(userObject);
+
+    sendResponse(res, 201, true, "User registered successfully", {
+      user: userObject,
+      token,
+    });
     return;
   } catch (error) {
     next(error);

@@ -1,14 +1,30 @@
 import { RequestHandler } from "express";
 import { Course } from "../models/Course";
+import { Enrollment } from "../models/Enrollment";
 import { sendResponse } from "../utils/responseHandler";
 
 export const createCourse: RequestHandler = async (req, res) => {
   try {
-    const course = new Course(req.body);
+    const lecturerId =
+      req.user?.role === "lecturer" ? req.user.userId : req.body.lecturer;
+    const course = new Course({
+      ...req.body,
+      lecturer: lecturerId || req.body.lecturer,
+    });
     await course.save();
     sendResponse(res, 201, true, "Course created successfully", course);
     return;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.code === 11000) {
+      sendResponse(
+        res,
+        400,
+        false,
+        "A course with this course code already exists",
+        null
+      );
+      return;
+    }
     sendResponse(res, 500, false, "Failed to create course", null);
     return;
   }
@@ -169,6 +185,14 @@ export const enrollStudent: RequestHandler = async (req, res) => {
       sendResponse(res, 404, false, "Course not found", null);
       return;
     }
+
+    // Synchronize with normalized Enrollment collection
+    await Enrollment.findOneAndUpdate(
+      { student: studentId, course: courseId },
+      { status: "active", lastAccessedAt: new Date() },
+      { upsert: true, new: true }
+    );
+
     sendResponse(res, 200, true, "Student enrolled successfully", course);
     return;
   } catch (error) {
@@ -190,15 +214,21 @@ export const disenrollStudent: RequestHandler = async (req, res) => {
     ).populate("lecturer", "name email");
 
     if (!course) {
-      sendResponse(res, 404, true, "Course not found", null);
+      sendResponse(res, 404, false, "Course not found", null);
       return;
     }
 
-    sendResponse(res, 200, true, "Disenroll Successfull", course);
+    // Update normalized Enrollment record
+    await Enrollment.findOneAndUpdate(
+      { student: studentId, course: courseId },
+      { status: "dropped" }
+    );
+
+    sendResponse(res, 200, true, "Disenroll successful", course);
     return;
   } catch (error) {
-    console.log(error);
-    sendResponse(res, 500, true, "Failed to disenroll student", null);
+    console.error("Disenroll error:", error);
+    sendResponse(res, 500, false, "Failed to disenroll student", null);
     return;
   }
 };
