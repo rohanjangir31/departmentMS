@@ -2,3 +2,15 @@ node_modules/
 .env
 # /dist
 .vercel
+
+# Uploaded course materials (keep directory structure, ignore files)
+uploads/*
+!uploads/.gitkeep
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Logs
+*.log
+npm-debug.log*

@@ -14,7 +14,17 @@ const app = express();
 
 app.get("/", (_req, res) => {
   res.json({
-    message: "Welcome to Campus connect Backend API",
+    message: "AcademiQ — AI-Powered Academic Department Management API",
+    version: "2.0.0",
+  });
+});
+
+// Health check endpoint — used by Docker healthcheck and CI
+app.get("/api/health", (_req, res) => {
+  res.status(200).json({
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
   });
 });
 

@@ -1,126 +1,102 @@
-# Department Management System
+# AcademiQ — AI-Powered Academic Department Management & Analytics System
 
-## Overview
+> **Major Project — B.Tech Computer Science, Final Year**  
+> Built upon [`oyerohabib/departmentMS`](https://github.com/oyerohabib/departmentMS) (MIT License) — see [ATTRIBUTION.md](./ATTRIBUTION.md)
 
-A comprehensive web application for managing academic departments, including courses, materials, and user management with different roles (students, lecturers, and admins).
+[![CI](https://github.com/rohanjangir31/departmentMS/actions/workflows/ci.yml/badge.svg)](https://github.com/rohanjangir31/departmentMS/actions/workflows/ci.yml)
 
-The Department Management System (DMS) is designed to streamline educational operations by providing a platform for course management, student enrollment, learning materials distribution, and administrative tasks. The application features role-based access controls, real-time updates, and a responsive user interface.
+---
 
-## Live Applications
+## What is AcademiQ?
 
-- Frontend: <https://department-ms.vercel.app/>
-- API: <https://departmentms-1.onrender.com/>
+AcademiQ is a production-grade academic department management platform that extends a base open-source project with:
 
-## Documentation
+- 🤖 **AI RAG Assistant** — Students ask questions in natural language; get citation-backed answers from their own course materials (no cloud API key required)
+- 📊 **Academic Risk Prediction** — Lecturers see a cohort risk dashboard; the system flags at-risk students early using a transparent risk index formula
+- 🔐 **Security Hardened** — Fixed privilege escalation, added Zod validation on all routes, normalized enrollment data
+- ✅ **26 Automated Tests** — Jest + Supertest + mongodb-memory-server; all passing
+- 🐳 **Docker Compose** — One-command full stack deployment
 
-- [Frontend Documentation](https://github.com/oyerohabib/departmentMS/blob/main/frontend/README.md)
-- [Backend Documentation](https://github.com/oyerohabib/departmentMS/blob/main/backend/README.md)
+---
 
-## Core Features
+## Quick Start (Docker — Recommended)
 
-- Authentication & Authorization
-- User registration and login
-- JWT-based authentication
-- Role-based access control (Student, Lecturer, Admin)
-- Password hashing with bcrypt
+```bash
+git clone https://github.com/rohanjangir31/departmentMS.git
+cd departmentMS
+docker compose up --build
+```
 
-## Course Management
+| Service | URL |
+|---------|-----|
+| Frontend (Next.js) | http://localhost:3000 |
+| Backend API (Express) | http://localhost:4000/api |
+| Health Check | http://localhost:4000/api/health |
 
-- Create, view, update, and delete courses
-- Course enrollment for students
-- Course assignment for lecturers
-- Course details with enrolled students
+---
 
-## Learning Materials
+## Manual Setup
 
-- Upload and manage course materials
-- Download materials
-- Organize materials by course
-- User Management
-- User profiles with role information
-- Update user details
-- View enrolled/teaching courses
+```bash
+# 1. Backend
+cd backend
+cp .env.example .env     # Edit MONGODB_URI and JWT_SECRET
+npm install
+npm run dev              # Port 4000
 
-## Technology Stack
+# 2. Frontend (new terminal)
+cd frontend
+cp .env.example .env.local
+npm install
+npm run dev              # Port 3000
 
-### Frontend
+# 3. Run all tests (no MongoDB required)
+cd backend
+npm test
+```
 
-- Next.js
-- TypeScript
-- Tailwind CSS
-- Axios for API requests
-- React Toastify for notifications
+---
 
-### Backend
+## Tech Stack
 
-- Express.js
-- TypeScript
-- MongoDB with Mongoose
-- JWT for authentication
-- Multer for file uploads
-- CORS for cross-origin requests
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js 15 (App Router), React 19, Tailwind CSS 3 |
+| Backend | Express.js, TypeScript 5.8, Mongoose 8 |
+| Database | MongoDB 7 |
+| Validation | Zod 4 |
+| AI Engine | Custom RAG (TF-IDF + Cosine Similarity) + Risk Index |
+| Testing | Jest 30, Supertest, mongodb-memory-server |
+| Deployment | Docker Compose, GitHub Actions CI |
 
-## Screenshots
+---
 
-|                                                        |                                                   |
-| :----------------------------------------------------: | :-----------------------------------------------: |
-|   ![Landing Page](https://i.imgur.com/wdoVJFC.jpeg)    |  ![Login Page](https://i.imgur.com/AKhT6oN.jpeg)  |
-|   ![Register Page](https://i.imgur.com/ZOpo4pU.jpeg)   |  ![Dashboard](https://i.imgur.com/d3IZkBU.jpeg)   |
-| ![Course Management](https://i.imgur.com/AuH7OyJ.jpeg) | ![User Profile](https://i.imgur.com/lSh6g33.jpeg) |
+## Architecture
 
-## Future Development Roadmap
+```
+Client (Next.js) → Axios → Express API → Zod Middleware → Controllers
+                                                    ↓
+                                           AI Engine (RAG + Risk)
+                                                    ↓
+                                              MongoDB Atlas
+```
 
-### Enhanced Admin Controls
+---
 
-- Comprehensive user management system
-- Bulk actions for courses and users
-- Analytics dashboard for administrators
-- User activity monitoring
-- System-wide announcements
+## Original Work vs My Contributions
 
-### Academic Structure
+| Area | Original `departmentMS` | My Additions (AcademiQ) |
+|------|------------------------|------------------------|
+| Auth & Courses | ✅ Working (with bugs) | Fixed bugs + Zod validation |
+| Security | ❌ Privilege escalation | ✅ Fixed; role hardcoded |
+| Enrollment | ❌ Denormalized array | ✅ Normalized + unique index |
+| AI Features | ❌ None | ✅ RAG + Risk Predictor |
+| Tests | ❌ Zero | ✅ 26 passing |
+| Deployment | ❌ None | ✅ Docker Compose + CI |
+| Documentation | ❌ Minimal | ✅ Full thesis + viva guide |
 
-- Integration of academic levels (100L, 200L, etc.)
-- Semester/session-based course organization
-- Prerequisite course relationships
-- Academic calendar integration
-- Course credit system
-
-### Technical Improvements
-
-- Improved landing page with feature highlights
-- Swagger documentation for the API
-- Social authentication (Google, Facebook)
-- WebSocket integration for real-time notifications
-- Mobile application development
-- API rate limiting and caching
-
-### Student Experience
-
-- Class scheduling and timetable generation
-- Calendar integration
-- Exam and assignment submission portals
-- Grade management system
-- Student performance analytics
-- Discussion forums for courses
-
-### Lecturer Features
-
-- Attendance tracking
-- Grading tools
-- Automated notification system for upcoming classes
-- Integration with video conferencing for virtual classes
-- Course material version control
-- Assignment creation and management
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+---
 
 ## License
 
-This project is licensed under the [MIT LICENSE](LICENSE).
+MIT — See [LICENSE](./LICENSE). Original work by Oyero Habibulah O. — See [ATTRIBUTION.md](./ATTRIBUTION.md).
