@@ -3,12 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { authService } from "@/services/auth.service";
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-toastify";
 
 export default function Register() {
   const router = useRouter();
-  const { register } = authService;
+  const { register } = useAuth();
   const [formData, setFormData] = useState<{
     name: string;
     email: string;

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import Sidebar from "@/components/Sidebar";
 
 export default function DashboardLayout({
   children,
@@ -20,8 +21,9 @@ export default function DashboardLayout({
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="min-h-[70vh] flex flex-col items-center justify-center space-y-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+        <p className="text-sm font-medium text-slate-500">Loading your academic workspace...</p>
       </div>
     );
   }
@@ -31,9 +33,11 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex bg-gray-50">
-      {/* <Sidebar /> */}
-      <div className="flex-1 p-6 md:p-8 overflow-y-auto">{children}</div>
+    <div className="flex min-h-[calc(100vh-4rem)] bg-slate-50">
+      <Sidebar />
+      <div className="flex-1 p-6 md:p-8 overflow-y-auto max-w-7xl mx-auto w-full">
+        {children}
+      </div>
     </div>
   );
 }

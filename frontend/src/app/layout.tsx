@@ -1,18 +1,18 @@
-/* eslint-disable @next/next/no-sync-scripts */
-
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Campus connect - Learning Management System",
+  title: "AcademiQ - Academic Department Management & Analytics System",
   description:
-    "A platform for students and lecturers to connect and share course materials",
+    "AI-powered academic platform featuring grounded course document RAG assistant and student early warning analytics.",
 };
 
 export default function RootLayout({
@@ -22,20 +22,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-      </head>
       <body className={inter.className}>
         <AuthProvider>
           <div className="min-h-screen flex flex-col">
             <Navbar />
-            <main className="flex-grow bg-gray-50 justify-center items-center">
-              {children}
-            </main>
+            <main className="flex-grow bg-gray-50">{children}</main>
             <Footer />
           </div>
         </AuthProvider>
-        <ToastContainer />
+        <ToastContainer position="top-right" autoClose={3000} />
       </body>
     </html>
   );

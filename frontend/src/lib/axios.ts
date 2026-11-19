@@ -9,12 +9,14 @@ const axiosInstance = axios.create({
   },
 });
 
-// Request interceptor
+// Request interceptor: attaches JWT Bearer token if present
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
@@ -23,15 +25,22 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor
+// Response interceptor: automatically cleans up expired tokens on 401
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      // Handle token expiration
-      // commented this till I am done fixing the type errors
-      // localStorage.removeItem("token");
-      // window.location.href = "/login";
+      if (typeof window !== "undefined") {
+        const isAuthEndpoint =
+          error.config?.url?.includes("/auth/login") ||
+          error.config?.url?.includes("/auth/signup");
+        if (!isAuthEndpoint) {
+          localStorage.removeItem("token");
+          if (window.location.pathname !== "/login") {
+            window.location.href = "/login?expired=1";
+          }
+        }
+      }
     }
     return Promise.reject(error);
   }

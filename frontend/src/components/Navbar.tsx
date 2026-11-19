@@ -13,10 +13,13 @@ export default function Navbar() {
     <nav className="bg-white/95 text-gray-900 border-b border-gray-100 sticky top-0 z-30 backdrop-blur">
       <div className="mx-auto flex h-20 w-full max-w-6xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white font-semibold">
-            CC
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-700 to-indigo-600 text-white font-bold tracking-wider shadow-sm">
+            AQ
           </span>
-          <span className="text-lg font-semibold">Campus connect</span>
+          <div className="flex flex-col">
+            <span className="text-lg font-extrabold text-slate-800 tracking-tight">AcademiQ</span>
+            <span className="text-[10px] font-semibold text-blue-600 uppercase tracking-widest -mt-1">AI Department System</span>
+          </div>
         </Link>
         <ul className="flex items-center gap-4 text-sm font-medium text-gray-600">
           {user ? (
