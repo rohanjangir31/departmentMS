@@ -18,7 +18,7 @@ export default function EditCoursePage() {
     title: "",
     courseCode: "",
     description: "",
-    lecturer: user!._id,
+    lecturer: user?._id || "",
   });
   const { error, handleError, clearError } = useApiError();
 

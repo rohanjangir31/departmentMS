@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 export default function UploadMaterialPage() {
   const { id } = useParams() as { id: string };
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [formData, setFormData] = useState({
     title: "",
   });
@@ -18,10 +18,19 @@ export default function UploadMaterialPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Check if user is a lecturer
-  if (user?.role === "student") {
-    router.push("/dashboard");
-    return null;
+  // Check role inside useEffect to prevent render-phase setState / router error
+  useEffect(() => {
+    if (!authLoading && user && user.role === "student") {
+      router.push("/dashboard");
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading || !user || user.role === "student") {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
+      </div>
+    );
   }
 
   const handleChange = (

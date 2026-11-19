@@ -90,48 +90,56 @@ const seedDatabase = async () => {
     const courses = await Course.insertMany([
       {
         title: "Introduction to Computer Science",
+        courseCode: "CSC101",
         description:
           "An introductory course on computer science principles and programming.",
         lecturer: lecturers[0]._id,
       },
       {
         title: "Advanced Database Systems",
+        courseCode: "CSC201",
         description:
           "A deep dive into database design, implementation, and optimization techniques.",
         lecturer: lecturers[1]._id,
       },
       {
         title: "Web Development Fundamentals",
+        courseCode: "CSC301",
         description:
           "Learn the basics of web development, including HTML, CSS, and JavaScript.",
         lecturer: lecturers[2]._id,
       },
       {
         title: "Mobile App Development",
+        courseCode: "CSC401",
         description:
           "Explore the principles of mobile app development for iOS and Android.",
         lecturer: lecturers[0]._id,
       },
       {
         title: "Data Structures and Algorithms",
+        courseCode: "CSC202",
         description:
           "An in-depth study of data structures and algorithms for efficient problem-solving.",
         lecturer: lecturers[1]._id,
       },
       {
         title: "Introduction to AI & ML",
+        courseCode: "CSC501",
         description:
           "An overview of artificial intelligence and machine learning concepts and applications.",
         lecturer: lecturers[2]._id,
       },
       {
         title: "Cybersecurity Fundamentals",
+        courseCode: "CSC302",
         description:
           "Learn the basics of cybersecurity, including threats, vulnerabilities, and defenses.",
         lecturer: lecturers[0]._id,
       },
       {
         title: "Advanced Blockchain Systems",
+        courseCode: "CSC502",
         description:
           "A comprehensive look at blockchain technology and its applications.",
         lecturer: lecturers[1]._id,

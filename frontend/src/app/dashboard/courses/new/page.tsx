@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
@@ -10,20 +10,35 @@ import { toast } from "react-toastify";
 
 export default function CreateCoursePage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { error, handleError, clearError } = useApiError();
   const [formData, setFormData] = useState({
     title: "",
     courseCode: "",
     description: "",
-    lecturer: user!._id,
+    lecturer: "",
   });
   const [loading, setLoading] = useState(false);
 
-  // Check if user is a lecturer
-  if (user?.role !== "lecturer") {
-    router.push("/dashboard");
-    return null;
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({ ...prev, lecturer: user._id }));
+    }
+  }, [user]);
+
+  // Check if user is a lecturer or admin — must be in useEffect to avoid render-phase navigation
+  useEffect(() => {
+    if (!authLoading && user && user.role !== "lecturer" && user.role !== "admin") {
+      router.push("/dashboard");
+    }
+  }, [user, authLoading, router]);
+
+  if (authLoading || !user || (user.role !== "lecturer" && user.role !== "admin")) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
+      </div>
+    );
   }
 
   const handleChange = (
