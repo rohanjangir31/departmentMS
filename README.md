@@ -83,17 +83,7 @@ Client (Next.js) → Axios → Express API → Zod Middleware → Controllers
 
 ---
 
-## Original Work vs My Contributions
 
-| Area | Original `departmentMS` | My Additions (AcademiQ) |
-|------|------------------------|------------------------|
-| Auth & Courses | ✅ Working (with bugs) | Fixed bugs + Zod validation |
-| Security | ❌ Privilege escalation | ✅ Fixed; role hardcoded |
-| Enrollment | ❌ Denormalized array | ✅ Normalized + unique index |
-| AI Features | ❌ None | ✅ RAG + Risk Predictor |
-| Tests | ❌ Zero | ✅ 26 passing |
-| Deployment | ❌ None | ✅ Docker Compose + CI |
-| Documentation | ❌ Minimal | ✅ Full thesis + viva guide |
 
 ---
 
